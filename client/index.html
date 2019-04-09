@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/regular.css" integrity="sha384-FKw7x8fCxuvzBwOJmhTJJsKzBl8dnN9e2R4+pXRfYoHivikuHkzWyhKWDSMcGNK8" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css" rel="stylesheet">
+    <title>Mini Wordpress</title>
+  </head>
+  <body>
+    <div class="container-fluid full-height">
+      <!-- NAVBAR -->
+      <div class="row" >
+        <div class="col border">
+          <span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span> 
+        </div>
+        <div class="col-6 border py-3">
+          navigations
+        </div>
+        <div class="col-2 border py-3">
+          write button
+        </div>
+        <div class="col-2 border py-3">
+          <div class="row text-center">
+            <div class="col">
+              ava
+            </div>
+            <div class="col">
+              notif
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="row sidebar-menu">
+        <div class="col-3 border anyClass">
+          <div class="row">
+            <div class="col border py-2">
+              <i class="fas fa-desktop"></i> View site
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col border py-2">
+              <i class="fas fa-chart-bar"></i> Stats
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col border py-2">
+              <i class="fas fa-history"></i> Activity
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-8 border py-2">
+              <i class="fas fa-paper-plane"></i> Plan
+            </div>
+            <div class="col border py-2">
+              Free
+            </div>
+          </div>
+
+          <div class="row disable-pointer-events">
+            <div class="col border py-2">
+              <strong>Manage</strong>
+            </div>
+          </div>
+
+          <div class="row align-self-center">
+            <div class="col-8 border py-2">
+              <span class="d-flex ">Site Pages</span>
+            </div>
+            <div class="col border py-2">
+              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
+            </div>
+          </div>
+
+
+          <div class="row ">
+            <div class="col-8 border py-2">
+              <a href="#" id="reveal-blog-posts-page">Blog Posts</a>
+            </div>
+            <div class="col border py-2">
+              <a href="#" id="reveal-create-an-article-page"><button type="button" class="btn btn-outline-dark btn-sm">Add</button></a>
+            </div>
+          </div>
+
+          <div class="row align-items-center">
+            <div class="col-8 border">
+              <i class="fas fa-image"></i> Media
+            </div>
+            <div class="col border py-2">
+              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col border py-2">
+              <i class="fas fa-comments"></i> Comments
+            </div>
+          </div>
+
+          <div class="row align-items-center">
+            <div class="col-8 border">
+              Feedback
+            </div>
+            <div class="col border py-2">
+              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
+            </div>
+          </div>
+
+          <div class="row align-items-center">
+            <div class="col-7 border">
+              <i class="fas fa-puzzle-piece"></i> Plugins
+            </div>
+            <div class="col border  py-2">
+              <button type="button" class="btn btn-outline-dark btn-sm">Manage</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col border py-2">
+              <i class="fas fa-cloud-upload-alt"></i> Import
+            </div>
+          </div>
+
+          <div class="row disable-pointer-events">
+            <div class="col border py-2">
+              <strong>Personalize</strong>
+            </div>
+          </div>
+
+          <div class="row align-items-center">
+            <div class="col-7 border">
+              <i class="fas fa-tools"></i> Customize
+            </div>
+            <div class="col border py-2">
+              <button type="button" class="btn btn-outline-dark btn-sm">Themes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENT: Blog Posts -->
+        <div class="col border disable-pointer-events" id="blog-posts-page">
+          <div class="row d-flex p-5">
+            <div class="container border">
+              <div class="row mb-4">
+                <div class="col-2 py-2 border">
+                  Published
+                </div>
+                <div class="col-2 py-2 border">
+                  Drafts
+                </div>
+                <div class="col border py-2">
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col border py-2">
+                  <strong>The Journey Begins</strong>
+                  <br>
+                  <small>created at</small>
+                </div>
+                <div class="col-2 border py-2">
+                  thumbnail
+                </div>
+                <div class="col-1 border">
+                  <i class="fas fa-ellipsis-h"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- #CONTENT: Blog Posts -->
+
+        <!-- CONTENT: Add article -->
+        <div class="col border" id="create-an-article-page">
+          <div class="row d-flex p-5">
+            <div class="container border">
+              <div class="row mb-4">
+                <div class="col border">
+                  <form>
+                      <div class="form-group">
+                        <input type="email" class="form-control" id="article-title-input" placeholder="Title">
+                      </div>
+                    <div id="summernote"></div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- #CONTENT: Add article -->
+
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
+    <script src="./scripts/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Volkhov');
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+    height:100%;
+}
+
+#side-navbar {
+  overflow: auto;
+  flex-grow : 1;
+}
+
+/* div .sidebar-menu div.row:hover, div .sidebar-menu div.row div:hover {
+  background-color: grey;
+  color: white;
+} */
+
+.disable-pointer-events {
+  pointer-events: none;
+}
+
+.anyClass {
+  overflow-y: scroll;
+}
+
+.full-height {
+  height: 100%;
+}
