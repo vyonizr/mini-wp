@@ -33,6 +33,20 @@ class ArticleController {
       }
     })
   }
+
+  static deleteAnArticle(req, res) {
+    Article.deleteOne({
+      _id: req.params.articleId
+    })
+    .then(() => {
+      res.status(200).json({
+        message: "delete success"
+      })
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+  }
 }
 
 module.exports = ArticleController
