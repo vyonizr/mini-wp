@@ -9,26 +9,35 @@ new Vue({
     articleTitle: "",
     articleContent: "",
     articleIdUpdate: "",
-    articleFeaturedImage: "",
-    editedArticleId: "",
     articleTitleUpdate: "",
     articleContentUpdate: "",
+    articleUserId: "",
+    signUpEmailInput: "",
+    signUpNameInput: "",
+    signUpPasswordInput: "",
+    signInEmailInput: "",
+    signInPasswordInput: "",
     formData: {},
     articles: [],
-    dialog: false,
+    createAnArticleModal: false,
     showBlogPostsPage: true,
     updateAnArticleModal: false,
     showCreateArticleForm: false,
+    showSignUpForm: false,
+    showSignInForm: false,
     token: localStorage.getItem("token"),
+    name: localStorage.getItem("name")
   },
+  // localStorage.getItem("token")
 
   components: {
     wysiwyg: vueWysiwyg.default.component,
   },
 
   created() {
-    this.clearAllForms()
-    this.getAllArticles()
+    if(localStorage.getItem("token") !== null) {
+      this.getAllArticles()
+    }
   },
 
   mounted() {
@@ -64,6 +73,9 @@ new Vue({
     },
 
     submitArticle() {
+      this.formData.set('title', this.articleTitle);
+      this.formData.set("content", this.articleContent)
+
       axios.post(`${baseURL}/articles`, this.formData, {
         headers: {
           authentication: this.token,
@@ -87,16 +99,32 @@ new Vue({
     },
 
     deleteAnArticle(articleId, userId) {
-      Swal.fire({
+      const swalWithVuetifyButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'v-btn theme--light error',
+          cancelButton: 'v-btn outline'
+        },
+        buttonsStyling: false,
+      })
+
+
+      swalWithVuetifyButtons.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this.",
+        text: "You won't be able to revert this!",
         type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: "#d9534f"
+      })
+      .then((result) => {
+        console.log(result.value, "<= result value");
         if (result.value) {
+          Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+          )
           return axios.delete(`${baseURL}/articles/${articleId}`, {
             headers: {
               authentication: this.token,
@@ -104,14 +132,19 @@ new Vue({
             }
           })
         }
+        else {
+          return Swal.fire({
+            text: "Cancelled",
+            type: 'info',
+          })
+        }
       })
       .then(() => {
-        Swal.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
-        return axios.get(`${baseURL}/articles`)
+        return axios.get(`${baseURL}/articles`, {
+          headers: {
+            authentication: this.token
+          }
+        })
       })
       .then(({ data }) => {
         data = data.sort(function(a, b) {
@@ -124,35 +157,86 @@ new Vue({
       })
     },
 
-    updateAnArticle(articleId, userId) {
-      axios.patch(`${baseURL}/articles/${articleId}`, {
-        title: this.articleTitleUpdate,
-        content: this.articleContentUpdate,
-        featured_image: this.articleFeaturedImage,
-      }, {
+    updateAnArticle() {
+      this.formData.set('title', this.articleTitleUpdate);
+      this.formData.set("content", this.articleContentUpdate)
+
+      axios.patch(`${baseURL}/articles/${this.articleIdUpdate}`, this.formData, {
         headers: {
           authentication: this.token,
-          authorization: userId
+          authorization: this.articleUserId,
+          "Content-Type": "multipart/form-data"
         }
       })
       .then(() => {
         Swal.fire(
           'Updated!',
-          'Your file has been deleted.',
           'success'
         )
         this.articleTitleUpdate = ""
         this.articleContentUpdate = ""
         this.articleIdUpdate = ""
+        this.articleUserId = ""
         this.updateAnArticleModal = false
         this.showCreateArticleForm = false
-        return axios.get(`${baseURL}/articles`)
+
+        return axios.get(`${baseURL}/articles`, {
+          headers: {
+            authentication: this.token
+          }
+        })
       })
       .then(({ data }) => {
         data = data.sort(function(a, b) {
           return new Date(b.created_at) - new Date(a.created_at)
         })
         this.articles = data
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
+    signUp() {
+      console.log("signp");
+      axios.post(`${baseURL}/users/register`, {
+        email: this.signUpEmailInput,
+        name: this.signUpNameInput,
+        password: this.signUpPasswordInput
+      })
+      .then(({ data }) => {
+        Swal.fire({
+          type: 'success',
+          title: 'Way to go!',
+        })
+        this.clearAllForms()
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
+    signIn() {
+      axios.post(`${baseURL}/users/login`, {
+        email: this.signInEmailInput,
+        password: this.signInPasswordInput
+      })
+      .then(({ data }) => {
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("id", data.id)
+        localStorage.setItem("name", data.name)
+        localStorage.setItem("authMethod", "basic")
+
+        Swal.fire({
+          type: "success",
+          title: `Welcome, ${localStorage.getItem("name")}!`,
+          showConfirmButton: false,
+          timer: 1500
+        })
+        this.clearAllForms()
+        this.showSignInForm = false;
+        this.token = localStorage.getItem("token");
+        this
       })
       .catch(err => {
         console.log(err);
@@ -160,7 +244,7 @@ new Vue({
     },
 
     onSignIn(googleUser) {
-      var idToken = googleUser.getAuthResponse().id_token;
+      let idToken = googleUser.getAuthResponse().id_token;
       console.log(idToken);
 
       axios.post(`${baseURL}/users/google-sign-in`, {
@@ -178,6 +262,8 @@ new Vue({
           showConfirmButton: false,
           timer: 1500
         })
+
+        this.token = localStorage.getItem("token");
       })
       .catch(err => {
         console.log(err);
@@ -185,17 +271,17 @@ new Vue({
     },
 
     signOut() {
-      // var auth2 = gapi.auth2.getAuthInstance();
-      // auth2.signOut().then(function () {
-      //   console.log('User signed out.');
-      // });
-      this.token = null
+      this.clearCredentials()
 
-      localStorage.clear()
+      if (gapi.auth2) {
+        const auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        });
+      }
     },
 
     obtainImage(fieldName, fileList) {
-      console.log(fileList, "<= fileList");
       const formData = new FormData();
       if (!fileList.length) return;
       Array
@@ -205,13 +291,12 @@ new Vue({
         formData.append("image", fileList[x])
       });
 
-    // articleTitle: "",
-    // articleContent: "",
-
-      formData.set('title', this.articleTitle);
-      formData.set("content", this.articleContent)
-      console.log(formData.get("title"), "<= formData");
       this.formData = formData
+    },
+
+    clearCredentials() {
+      this.token = null,
+      localStorage.clear()
     },
 
     clearAllForms() {
@@ -223,6 +308,9 @@ new Vue({
       this.editedArticleId = ""
       this.articleTitleUpdate = ""
       this.articleContentUpdate = ""
+      this.signUpEmailInput = ""
+      this.signUpNameInput = ""
+      this.signUpPasswordInput = ""
     }
   }
 })

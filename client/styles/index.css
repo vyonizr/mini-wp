@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css?family=Heebo');
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
-* {
+/* * {
   margin: 0;
   padding: 0;
   text-transform: none !important;
-}
+} */
 
 html, body {
     height:100%;
@@ -44,4 +44,13 @@ html, body {
 
 .full-height {
   height: 100%;
+}
+
+#post-container{
+  transition: 0.3s ease;
+}
+
+#post-container:hover {
+  transition: 0.3s ease;
+  transform: scale(1.02);
 }

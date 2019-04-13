@@ -1,9 +1,20 @@
-const { Article, User } = require("../models")
+const { Article, } = require("../models")
 const ObjectId = require('mongodb').ObjectID
+
+/*
+    .populate({
+      path: "UserId",
+      select: "name"
+    })
+ */
 
 class ArticleController {
   static getAllArticles(req, res) {
     Article.find({})
+    .populate({
+      path: "UserId",
+      select: "name"
+    })
     .then(articles => {
       res.status(200).json(articles)
     })
@@ -17,7 +28,7 @@ class ArticleController {
       title: req.body.title,
       content: req.body.content,
       featured_image: req.file.cloudStoragePublicUrl,
-      UserId: req.authenticatedUser.id
+      UserId: ObjectId(req.authenticatedUser.id)
     })
     .then(createdArticle => {
       res.status(201).json(createdArticle)
@@ -36,6 +47,7 @@ class ArticleController {
   }
 
   static deleteAnArticle(req, res) {
+    console.log("masuk delete article");
     Article.deleteOne({
       _id: req.params.articleId
     })
@@ -46,6 +58,22 @@ class ArticleController {
     })
     .catch(err => {
       res.status(500).json(err)
+    })
+  }
+
+  static updateAnArticle(req, res) {
+    Article.findByIdAndUpdate(req.params.articleId, {
+      title: req.body.title,
+      content: req.body.content,
+      featured_image: req.file.cloudStoragePublicUrl,
+      updatedAt: new Date()
+    }, { new: true })
+    .then(updatedArticle => {
+      console.log(updatedArticle);
+      res.status(200).json(updatedArticle)
+    })
+    .catch(err => {
+      res.send(500).json(err)
     })
   }
 }
