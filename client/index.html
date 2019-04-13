@@ -2,219 +2,217 @@
   <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="google-signin-client_id" content="611355965363-a29148lhp7ru4e9baphis30c6e43kaqa.apps.googleusercontent.com">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/regular.css" integrity="sha384-FKw7x8fCxuvzBwOJmhTJJsKzBl8dnN9e2R4+pXRfYoHivikuHkzWyhKWDSMcGNK8" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css">
-    <link rel="stylesheet" href="./styles/index.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css" rel="stylesheet">
-    <title>Mini Wordpress</title>
+    <link href="./styles/index.css" rel="stylesheet">
+    <link href="./styles/vueWysiwyg.css" rel="stylesheet">
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <title>Median</title>
   </head>
   <body>
-    <div class="container-fluid full-height">
-      <!-- NAVBAR -->
-      <div class="row" >
-        <div class="col border">
-          <span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span> 
-        </div>
-        <div class="col-6 border py-3">
-          navigations
-        </div>
-        <div class="col-2 border py-3">
-          write button
-        </div>
-        <div class="col-2 border py-3">
-          <div class="row text-center">
-            <div class="col">
-              ava
-            </div>
-            <div class="col">
-              notif
-            </div>
+    <div id="app">
+      <v-toolbar app dark color="#404040">
+        <v-toolbar-title class="white--text mr-3"><span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span></v-toolbar-title>
+        <v-toolbar-items class="hidden-sm-and-down" v-if="token != null">
+          <v-btn flat class="white--text" @click="showCreateArticleForm = false; showBlogPostsPage = true;">HOME</v-btn>
+          <v-btn flat class="white--text">YOUR POSTS</v-btn>
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+
+          <v-layout >
+            <v-flex lg6 order-lg2>
+
+            </v-flex>
+            <v-flex order-lg2 v-if="token != null">
+              <v-text-field
+                class="mx-2"
+                flat
+                label="Search"
+                prepend-inner-icon="search"
+                solo
+                autofocus
+                v-model="searchInput"
+              ></v-text-field>
+
+            </v-flex>
+          </v-layout>
+          <div  v-if="token != null">
+            <v-icon class="white--text" @click="dialog = true"  v-if="token != null">fas fa-pen fa-lg</v-icon>
+            <v-avatar class="mx-4" size="32">
+              <img src="https://avatars1.githubusercontent.com/u/44438299?s=460&v=4" alt="avatar">
+            </v-avatar>
+            <v-btn flat class="white--text" @click="signOut">SIGN OUT</v-btn>
           </div>
-        </div>
-      </div>
+      </v-toolbar>
 
-      <!-- SIDEBAR -->
-      <div class="row sidebar-menu">
-        <div class="col-3 border anyClass">
-          <div class="row">
-            <div class="col border py-2">
-              <i class="fas fa-desktop"></i> View site
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col border py-2">
-              <i class="fas fa-chart-bar"></i> Stats
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col border py-2">
-              <i class="fas fa-history"></i> Activity
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-8 border py-2">
-              <i class="fas fa-paper-plane"></i> Plan
-            </div>
-            <div class="col border py-2">
-              Free
-            </div>
-          </div>
-
-          <div class="row disable-pointer-events">
-            <div class="col border py-2">
-              <strong>Manage</strong>
-            </div>
-          </div>
-
-          <div class="row align-self-center">
-            <div class="col-8 border py-2">
-              <span class="d-flex ">Site Pages</span>
-            </div>
-            <div class="col border py-2">
-              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
-            </div>
-          </div>
-
-
-          <div class="row ">
-            <div class="col-8 border py-2">
-              <a href="#" id="reveal-blog-posts-page">Blog Posts</a>
-            </div>
-            <div class="col border py-2">
-              <a href="#" id="reveal-create-an-article-page"><button type="button" class="btn btn-outline-dark btn-sm">Add</button></a>
-            </div>
-          </div>
-
-          <div class="row align-items-center">
-            <div class="col-8 border">
-              <i class="fas fa-image"></i> Media
-            </div>
-            <div class="col border py-2">
-              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col border py-2">
-              <i class="fas fa-comments"></i> Comments
-            </div>
-          </div>
-
-          <div class="row align-items-center">
-            <div class="col-8 border">
-              Feedback
-            </div>
-            <div class="col border py-2">
-              <button type="button" class="btn btn-outline-dark btn-sm">Add</button>
-            </div>
-          </div>
-
-          <div class="row align-items-center">
-            <div class="col-7 border">
-              <i class="fas fa-puzzle-piece"></i> Plugins
-            </div>
-            <div class="col border  py-2">
-              <button type="button" class="btn btn-outline-dark btn-sm">Manage</button>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col border py-2">
-              <i class="fas fa-cloud-upload-alt"></i> Import
-            </div>
-          </div>
-
-          <div class="row disable-pointer-events">
-            <div class="col border py-2">
-              <strong>Personalize</strong>
-            </div>
-          </div>
-
-          <div class="row align-items-center">
-            <div class="col-7 border">
-              <i class="fas fa-tools"></i> Customize
-            </div>
-            <div class="col border py-2">
-              <button type="button" class="btn btn-outline-dark btn-sm">Themes</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- CONTENT: Blog Posts -->
-        <div class="col border disable-pointer-events" id="blog-posts-page">
-          <div class="row d-flex p-5">
-            <div class="container border">
-              <div class="row mb-4">
-                <div class="col-2 py-2 border">
-                  Published
+      <div>
+        <v-container class="my-5"  id="blog-feed" v-if="token !== null">
+          <v-card flat class="pa-3">
+            <v-layout class="my-5 pa-3" style="background-color: #e6e6e6" align-center justify-center fill-height row v-if="showBlogPostsPage" v-for="(article, index) in searchArticleByTitle" :key="article._id" data-aos="fade-up"/>
+              <v-flex lg12 md6 style="background-color: gold">
+                <div>
+                  <h3>{{ article.title }}</h3>
                 </div>
-                <div class="col-2 py-2 border">
-                  Drafts
+                <div>
+                  <p class="title">by Fitrahtur Rahman</p>
                 </div>
-                <div class="col border py-2">
-                  <div class="input-group mb-3">
-                    <input type="text" class="form-control">
-                    <div class="input-group-append">
-                      <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    </div>
+              </v-flex>
+              <v-flex lg2 style="background-color: brown">
+                <v-img
+                  :src="article.featured_image"
+                  aspect-ratio="1.8"
+                  :alt="article.title"
+                ></v-img>
+              </v-flex>
+              <v-flex lg9 class="pa-2" style="background-color: khaki">
+                <div class="nunito" >
+                  <p v-html="article.content"></p>
+                </div>
+              </v-flex>
+              <v-flex lg1 style="background-color: orangered">
+                <div class="text-xs-center">
+                  <v-icon class="px-2" @click="deleteAnArticle(article._id, article.UserId)">delete</v-icon>
+                  <v-icon class="px-2" @click="updateAnArticleModal = true; showCreateArticleForm = false; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id">edit</v-icon>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-card>
+          <!-- <v-layout v-if="showBlogPostsPage"style="width: 40rem;" row wrap v-for="(article, index) in searchArticleByTitle" :key="article._id" data-aos="fade-up">
+            <v-flex lg12 >
+              <v-card>
+                <v-img
+                  src=""
+                  aspect-ratio="2.75"
+                  :alt="article.title"
+                ></v-img>
+
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-0 heebo">{{ article.title }}</h3>
+                    <div v-if="article.content.length < 250" v-html="article.content" class="nunito"></div>
+                    <div v-else v-html="article.content.substring(0, 251) + ' ...'" class="nunito"></div>
                   </div>
+                </v-card-title>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                    <v-icon class="px-2" @click="deleteAnArticle(article._id)">delete</v-icon>
+                    <v-icon class="px-2" @click="updateAnArticleModal = true; showCreateArticleForm = false; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id">edit</v-icon>
+                  <v-btn flat color="green">Read more</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+          </v-layout> -->
+        </v-container>
+
+        <!-- LANDING PAGE CONTAINER -->
+        <v-container  class="my-5" v-if="token == null">
+          <v-layout row wrap align-center justify-center fill-height>
+            <v-flex xs12 class="text-lg-center">
+              <div>
+                <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
+              </div>
+              <div>
+                <span style="font-family: 'nunito', serif; font-size: 2rem">a place to read and write big ideas and important stories</span>
+              </div>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap align-center justify-center class="mt-4">
+            <v-flex xs12 class="text-lg-center">
+              <div class="row text-center mx-auto" style="width: 30rem">
+                <div class="col">
+                  <v-btn flat large>Sign in</v-btn>
+                  <v-btn outline large color="success">Get started</v-btn>
                 </div>
               </div>
+            </v-flex>
 
-              <div class="row">
-                <div class="col border py-2">
-                  <strong>The Journey Begins</strong>
-                  <br>
-                  <small>created at</small>
-                </div>
-                <div class="col-2 border py-2">
-                  thumbnail
-                </div>
-                <div class="col-1 border">
-                  <i class="fas fa-ellipsis-h"></i>
-                </div>
+            <v-flex xs4>
+            </v-flex>
+            <v-flex xs4 >
+              <div >
+                <a href="#" @click="signOut();">Sign out</a>
+                <div id="google-signin-btn"></div>
               </div>
-            </div>
-          </div>
-        </div>
-        <!-- #CONTENT: Blog Posts -->
+            </v-flex>
+            <v-flex xs4>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <!-- #LANDING PAGE CONTAINER -->
 
-        <!-- CONTENT: Add article -->
-        <div class="col border" id="create-an-article-page">
-          <div class="row d-flex p-5">
-            <div class="container border">
-              <div class="row mb-4">
-                <div class="col border">
-                  <form>
-                      <div class="form-group">
-                        <input type="email" class="form-control" id="article-title-input" placeholder="Title">
-                      </div>
-                    <div id="summernote"></div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- #CONTENT: Add article -->
+        <!-- DIALOG -->
+        <v-dialog v-model="dialog">
+          <v-card>
+              <v-form
+                ref="form"
+                class="pa-3"
+              >
+                <v-text-field
+                  v-model="articleTitle"
+                  label="Title"
+                  solo
+                ></v-text-field>
+                <input type="file" @change="obtainImage($event.target.name, $event.target.files)">
+                <wysiwyg v-model="articleContent"></wysiwyg>
+              </v-form>
 
+            <v-card-actions class="justify-center">
+              <v-btn outline color="grey" @click="dialog = false;">CANCEL</v-btn>
+              <v-btn color="success" @click="dialog = false; submitArticle();">POST</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="updateAnArticleModal">
+          <v-card>
+              <v-form
+                ref="form"
+                class="px-5"
+              >
+                <v-text-field
+                  v-model="articleTitleUpdate"
+                  label="Title"
+                  solo
+                ></v-text-field>
+                <wysiwyg v-model="articleContentUpdate"></wysiwyg>
+              </v-form>
+            <v-card-actions class="justify-center">
+              <v-btn outline color="grey" @click="updateAnArticleModal = false;">CANCEL</v-btn>
+              <v-btn color="success" @click="updateAnArticle()">Update</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <!-- #DIALOG -->
       </div>
-    </div>
 
-    <!-- SCRIPTS -->
+    </div>
+    <!-- #APP -->
+
+<!-- SCRIPTS -->
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
+    <script src="./scripts/vueWysiwyg.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./scripts/main.js"></script>
+    <script>
+      AOS.init();
+    </script>
   </body>
 </html>

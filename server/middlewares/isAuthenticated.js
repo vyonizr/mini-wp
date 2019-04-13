@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken")
+const { jwt } = require("../helpers")
 
 module.exports = function isAuthenticated(req, res, next) {
   if (req.headers.authentication) {
-    const decodedToken = jwt.verify(req.headers.authentication, process.env.JWT_SECRET)
+    const decodedToken = jwt.verify(req.headers.authentication)
     req.authenticatedUser = decodedToken
     next()
   }

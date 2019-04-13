@@ -1,5 +1,6 @@
 'use strict'
-const { Storage } = require('@google-cloud/storage')
+require('dotenv').config()
+const {Storage} = require('@google-cloud/storage')
 const CLOUD_BUCKET = process.env.CLOUD_BUCKET
 
 const storage = new Storage({
@@ -9,7 +10,7 @@ const storage = new Storage({
 const bucket = storage.bucket(CLOUD_BUCKET)
 
 const getPublicUrl = (filename) => {
-
+    
   return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`
 }
 
@@ -28,6 +29,7 @@ const sendUploadToGCS = (req, res, next) => {
   })
 
   stream.on('error', (err) => {
+    console.log(err);
     req.file.cloudStorageError = err
     next(err)
   })

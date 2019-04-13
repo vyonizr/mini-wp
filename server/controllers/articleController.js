@@ -16,7 +16,7 @@ class ArticleController {
     Article.create({
       title: req.body.title,
       content: req.body.content,
-      featured_image: req.file.cloudStoragePublicUrl || "https://cdn-images-1.medium.com/max/2400/1*D1sccfJekrDjFkWwKQA8_Q.jpeg",
+      featured_image: req.file.cloudStoragePublicUrl,
       UserId: req.authenticatedUser.id
     })
     .then(createdArticle => {
@@ -29,6 +29,7 @@ class ArticleController {
         })
       }
       else {
+        console.log(err);
         res.status(500).json(err)
       }
     })

@@ -1,12 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Volkhov');
+@import url('https://fonts.googleapis.com/css?family=Heebo');
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 * {
   margin: 0;
   padding: 0;
+  text-transform: none !important;
 }
 
 html, body {
     height:100%;
+}
+
+.heebo {
+  font-family: 'Heebo', sans-serif;
+}
+
+.nunito {
+  font-family: 'Nunito', sans-serif;
+}
+
+.volkhov {
+  font-family: 'Volkhov', serif;
 }
 
 #side-navbar {
@@ -14,10 +29,10 @@ html, body {
   flex-grow : 1;
 }
 
-/* div .sidebar-menu div.row:hover, div .sidebar-menu div.row div:hover {
+.menu-hover:hover {
   background-color: grey;
   color: white;
-} */
+}
 
 .disable-pointer-events {
   pointer-events: none;
