@@ -53,4 +53,5 @@ html, body {
 #post-container:hover {
   transition: 0.3s ease;
   transform: scale(1.02);
+  cursor: pointer;
 }

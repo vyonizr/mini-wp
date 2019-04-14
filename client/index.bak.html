@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
     <meta name="google-signin-client_id" content="611355965363-a29148lhp7ru4e9baphis30c6e43kaqa.apps.googleusercontent.com">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/regular.css" integrity="sha384-FKw7x8fCxuvzBwOJmhTJJsKzBl8dnN9e2R4+pXRfYoHivikuHkzWyhKWDSMcGNK8" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
@@ -20,167 +18,267 @@
   </head>
   <body>
     <div id="app">
-      <v-app id="inspire">
-        <v-container grid-list-lg>
-          <v-layout>
-            <v-toolbar fixed color="#404040">
-              <v-toolbar-title class="white--text mr-3"><span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span></v-toolbar-title>
-              <v-toolbar-items class="hidden-sm-and-down" v-if="token != null">
-                <v-btn flat class="white--text" @click="showCreateArticleForm = false; showBlogPostsPage = true;">HOME</v-btn>
-                <v-btn flat class="white--text">YOUR POSTS</v-btn>
-              </v-toolbar-items>
-              <v-spacer></v-spacer>
+      <v-app>
+        <v-toolbar app dark color="#404040">
+          <v-toolbar-title class="white--text mr-3"><span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span></v-toolbar-title>
+          <v-toolbar-items class="hidden-sm-and-down" v-if="token != null">
+            <v-btn flat class="white--text" @click="showCreateArticleForm = false; showBlogPostsPage = true;">HOME</v-btn>
+            <v-btn flat class="white--text">YOUR POSTS</v-btn>
+          </v-toolbar-items>
+          <v-spacer></v-spacer>
 
-                <v-layout >
-                  <v-flex lg6 order-lg2>
+            <v-layout >
+              <v-flex lg6 order-lg2>
 
-                  </v-flex>
-                  <v-flex order-lg2 v-if="token != null">
-                    <v-text-field
-                      class="mx-2"
-                      flat
-                      label="Search"
-                      prepend-inner-icon="search"
-                      solo
-                      autofocus
-                      v-model="searchInput"
-                    ></v-text-field>
+              </v-flex>
+              <v-flex order-lg2 v-if="token != null">
+                <v-text-field
+                  class="mx-2"
+                  flat
+                  label="Search"
+                  prepend-inner-icon="search"
+                  solo
+                  autofocus
+                  v-model="searchInput"
+                ></v-text-field>
 
-                  </v-flex>
-                </v-layout>
-                <div  v-if="token != null">
-                  <v-icon class="white--text" @click="dialog = true"  v-if="token != null">fas fa-pen fa-lg</v-icon>
-                  <v-avatar class="mx-4" size="32">
-                    <img src="https://avatars1.githubusercontent.com/u/44438299?s=460&v=4" alt="avatar">
-                  </v-avatar>
+              </v-flex>
+            </v-layout>
+            <div v-if="token != null">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn flat icon color="white" v-on="on">
+                      <v-icon @click="createAnArticleModal = true" v-on="on">note_add</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Add an article</span>
+                </v-tooltip>
+<!--               <v-avatar class="mx-4" size="32">
+                <img src="https://avatars1.githubusercontent.com/u/44438299?s=460&v=4" alt="avatar">
+              </v-avatar> -->
+              <v-btn flat class="white--text" @click="signOut">SIGN OUT</v-btn>
+            </div>
+        </v-toolbar>
+  <!--
+
+  container
+    row loop
+      row
+        col11 col1
+      row
+        coll2 col10
+  -->
+        <div>
+          <v-container class="my-5"  id="blog-feed" v-if="token !== null">
+            <v-layout id="post-container" class="my-5" style="background-color: #e6e6e6" align-start justify-center fill-height row wrap v-if="showBlogPostsPage" v-for="(article, index) in searchArticleByTitle" :key="article._id" data-aos="fade-up"/>
+              <template v-if="name == article.UserId.name">
+                <v-flex lg10 md6 class="pt-3 pl-3"> <!-- style="background-color: khaki" -->
+                    <h4 class="title">{{ article.title }}</h4>
+                    <p class="subheading">by {{ article.UserId.name }}</p>
+                </v-flex>
+                <v-flex lg2>
+                  <div class="text-xs-center">
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn flat icon color="red" v-on="on">
+                          <v-icon @click="deleteAnArticle(article._id, article.UserId)">delete</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Delete</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn flat icon color="blue" v-on="on">
+                          <v-icon
+                          @click="updateAnArticleModal = true; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id; articleUserId = article.UserId">
+                          edit
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+                  </div>
+                </v-flex>
+              </template>
+              <template v-else>
+                <v-flex lg12 md6 class="pt-3 pl-3"> <!-- style="background-color: khaki" -->
+                  <h4 class="title">{{ article.title }}</h4>
+                  <p class="subheading">by {{ article.UserId.name }}</p>
+                </v-flex>
+              </template>
+              <v-flex lg2 class="pl-3 pb-3 pr-3">
+                <v-img
+                  :src="article.featured_image"
+                  max-height="100"
+                  :alt="article.title"
+                ></v-img>
+              </v-flex>
+              <v-flex lg10 class="pa-2">
+                <div class="nunito" >
+                  <p v-html="article.content"></p>
                 </div>
-            </v-toolbar>
-          </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-container>
 
-
-<!-- MAIN CONTAINER -->
-<!--         <v-container> -->
-<!-- COMPONENT CONTAINER -->
-          <div v-if="token == null">
-            <v-container>
-              <v-layout row wrap align-center justify-center fill-height>
-                <v-flex xs12 class="text-lg-center">
-                  <div>
-                    <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
+          <!-- LANDING PAGE CONTAINER -->
+          <v-container class="my-5" v-if="token == null">
+            <v-layout row wrap align-center justify-center fill-height>
+              <v-flex xs12 class="text-lg-center">
+                <div>
+                  <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
+                </div>
+                <div>
+                  <span style="font-family: 'nunito', serif; font-size: 2rem">a place to read and write big ideas and important stories</span>
+                </div>
+              </v-flex>
+            </v-layout>
+            <v-layout row wrap align-center justify-center class="mt-4">
+              <v-flex xs12 class="text-lg-center">
+                <div class="row text-center mx-auto" style="width: 30rem">
+                  <div class="col">
+                    <v-btn flat large @click="showSignInForm = true">Sign in</v-btn>
+                    <v-btn outline large color="success" @click="showSignUpForm = true">Get started</v-btn>
                   </div>
-                  <div>
-                    <span style="font-family: 'nunito', serif; font-size: 2rem">a place to read and write big ideas and important stories</span>
-                  </div>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap align-center justify-center class="mt-4">
-                <v-flex xs12 class="text-lg-center">
-                  <div class="row text-center mx-auto" style="width: 30rem">
-                    <div class="col">
-                      <v-btn flat large>Sign in</v-btn>
-                      <v-btn outline large color="success">Get started</v-btn>
-                    </div>
-                  </div>
-                </v-flex>
+                </div>
+              </v-flex>
 
-                <v-flex xs4>
-                </v-flex>
-                <v-flex xs4 >
-                  <div >
-                    <a href="#" @click="signOut();">Sign out</a>
-                    <div id="google-signin-btn"></div>
-                  </div>
-                </v-flex>
-                <v-flex xs4>
-                </v-flex>
-              </v-layout>
+              <v-flex xs4>
+              </v-flex>
+              <v-flex xs4 >
+                <div >
+                  <a href="#" @click="signOut();">Sign out</a>
+                  <div id="google-signin-btn"></div>
+                </div>
+              </v-flex>
+              <v-flex xs4>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <!-- #LANDING PAGE CONTAINER -->
 
-            </v-container>
-          </div>
+          <!-- DIALOG -->
+          <!-- CREATE AN ARTICLE MODAL -->
+          <v-dialog v-model="createAnArticleModal">
+            <v-card>
+                <v-form
+                  ref="form"
+                  class="pa-3"
+                >
+                  <v-text-field
+                    v-model="articleTitle"
+                    label="Title"
+                    solo
+                  ></v-text-field>
+                  <input type="file" @change="obtainImage($event.target.name, $event.target.files)">
+                  <wysiwyg v-model="articleContent"></wysiwyg>
+                </v-form>
 
-          <div v-else>
-              <v-layout v-if="showBlogPostsPage" class="mt-2" style="width: 40rem; margin-top: 5rem;" row wrap v-for="(article, index) in searchArticleByTitle" :key="article._id" data-aos="fade-up">
-                <v-flex lg12 >
-                  <v-card>
-                    <v-img
-                      src=""
-                      aspect-ratio="2.75"
-                      :alt="article.title"
-                    ></v-img>
+              <v-card-actions class="justify-center">
+                <v-btn outline color="grey" @click="createAnArticleModal = false;">CANCEL</v-btn>
+                <v-btn color="success" @click="createAnArticleModal = false; submitArticle();">POST</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- #CREATE AN ARTICLE MODAL -->
 
-                    <v-card-title primary-title>
-                      <div>
-                        <h3 class="headline mb-0 heebo">{{ article.title }}</h3>
-                        <div v-if="article.content.length < 250" v-html="article.content" class="nunito"></div>
-                        <div v-else v-html="article.content.substring(0, 251) + ' ...'" class="nunito"></div>
-                      </div>
-                    </v-card-title>
+          <!-- CREATE AN ARTICLE MODAL -->
+          <v-dialog v-model="updateAnArticleModal">
+            <v-card>
+                <v-form
+                  ref="form"
+                  class="pa-3"
+                >
+                  <v-text-field
+                    v-model="articleTitleUpdate"
+                    label="Title"
+                    solo
+                  ></v-text-field>
+                  <input type="file" @change="obtainImage($event.target.name, $event.target.files)">
+                  <wysiwyg v-model="articleContentUpdate"></wysiwyg>
+                </v-form>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                        <v-icon class="px-2" @click="deleteAnArticle(article._id)">delete</v-icon>
-                        <v-icon class="px-2" @click="updateAnArticleModal = true; showCreateArticleForm = false; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id">edit</v-icon>
-                      <v-btn flat color="green">Read more</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-flex>
-              </v-layout>
-          </div>
-        </v-container>
+              <v-card-actions class="justify-center">
+                <v-btn outline color="grey" @click="updateAnArticleModal = false;">CANCEL</v-btn>
+                <v-btn color="success" @click="updateAnArticleModal = false; updateAnArticle();">UPDATE</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- #CREATE AN ARTICLE MODAL -->
 
-        <!-- DIALOG -->
-        <v-dialog v-model="dialog">
-          <v-card>
-              <v-form
-                ref="form"
-                class="px-5"
-              >
-                <v-text-field
-                  v-model="articleTitle"
-                  label="Title"
-                  max-width="10%"
-                ></v-text-field>
-                <wysiwyg v-model="articleContent"></wysiwyg>
-              </v-form>
-            <v-card-actions class="justify-center">
-              <v-btn outline color="grey" @click="dialog = false;">CANCEL</v-btn>
-              <v-btn color="success" @click="dialog = false; submitArticle();">POST</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+          <!-- SIGNUP MODAL -->
+          <v-dialog v-model="showSignUpForm" persistent max-width="600px">
+            <v-card>
+              <v-card-title class="text-lg-center">
+                <span class="headline ">Sign Up</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container grid-list-md>
+                  <v-layout wrap>
+                    <v-flex lg12>
+                      <v-text-field label="Email*" v-model="signUpEmailInput" required></v-text-field>
+                    </v-flex>
+                    <v-flex lg12>
+                      <v-text-field label="Name*" v-model="signUpNameInput" required></v-text-field>
+                    </v-flex>
+                    <v-flex lg12>
+                      <v-text-field label="Password*" type="password" v-model="signUpPasswordInput" required></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+                <small>*indicates required field</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" flat @click="showSignUpForm = false">Close</v-btn>
+                <v-btn color="blue darken-1" flat @click="signUp(); showSignUpForm = false;">Register</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- #SIGNUP MODAL -->0
 
-        <v-dialog v-model="updateAnArticleModal">
-          <v-card>
-              <v-form
-                ref="form"
-                class="px-5"
-              >
-                <v-text-field
-                  v-model="articleTitleUpdate"
-                  label="Title"
-                  max-width="10%"
-                ></v-text-field>
-                <wysiwyg v-model="articleContentUpdate"></wysiwyg>
-              </v-form>
-            <v-card-actions class="justify-center">
-              <v-btn outline color="grey" @click="updateAnArticleModal = false;">CANCEL</v-btn>
-              <v-btn color="success" @click="updateAnArticle()">Update</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <!-- #DIALOG -->
+          <!-- #SIGNIN MODAL -->
+          <v-dialog v-model="showSignInForm" persistent max-width="600px">
+            <v-card>
+              <v-card-title class="text-lg-center">
+                <span class="headline ">Sign Up</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container grid-list-md>
+                  <v-layout wrap>
+                    <v-flex lg12>
+                      <v-text-field label="Email*" v-model="signInEmailInput" required></v-text-field>
+                    </v-flex>
+                    <v-flex lg12>
+                      <v-text-field label="Password*" type="password" v-model="signInPasswordInput" required></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+                <small>*indicates required field</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" flat @click="showSignInForm = false">Close</v-btn>
+                <v-btn color="blue darken-1" flat @click="signIn(); showSignInForm = false;">Register</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- #DIALOG -->
+        </div>
       </v-app>
     </div>
+    <!-- #APP -->
 
 <!-- SCRIPTS -->
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="./scripts/vueWysiwyg.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>

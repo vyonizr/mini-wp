@@ -47,7 +47,6 @@ class ArticleController {
   }
 
   static deleteAnArticle(req, res) {
-    console.log("masuk delete article");
     Article.deleteOne({
       _id: req.params.articleId
     })

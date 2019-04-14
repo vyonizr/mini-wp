@@ -12,16 +12,31 @@ new Vue({
     articleTitleUpdate: "",
     articleContentUpdate: "",
     articleUserId: "",
+    articleTitleOnDetailedArticleModal: "",
+    articleContentOnDetailedArticleModal: "",
+    articleFeaturedImageOnDetailedArticleModal: "",
     signUpEmailInput: "",
     signUpNameInput: "",
     signUpPasswordInput: "",
     signInEmailInput: "",
     signInPasswordInput: "",
+    emailInputRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+/.test(v) || 'E-mail must be valid'
+    ],
+    nameInputRules: [
+      v => !!v || 'Name is required',
+    ],
+    passwordRules: [
+      v => !!v || 'Password is required',
+    ],
     formData: {},
     articles: [],
+    valid: true,
     createAnArticleModal: false,
     showBlogPostsPage: true,
     updateAnArticleModal: false,
+    showDetailedArticleModal: false,
     showCreateArticleForm: false,
     showSignUpForm: false,
     showSignInForm: false,
@@ -55,6 +70,12 @@ new Vue({
   },
 
   methods: {
+    validate () {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true
+      }
+    },
+
     getAllArticles() {
       axios.get(`${baseURL}/articles`, {
         headers: {
@@ -209,10 +230,11 @@ new Vue({
           type: 'success',
           title: 'Way to go!',
         })
+        this.showSignUpForm = false;
         this.clearAllForms()
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.response.data, "<= error register");
       })
     },
 
@@ -222,6 +244,7 @@ new Vue({
         password: this.signInPasswordInput
       })
       .then(({ data }) => {
+        this.showSignInForm = false;
         localStorage.setItem("token", data.token)
         localStorage.setItem("id", data.id)
         localStorage.setItem("name", data.name)
@@ -236,21 +259,34 @@ new Vue({
         this.clearAllForms()
         this.showSignInForm = false;
         this.token = localStorage.getItem("token");
-        this
+        this.name = localStorage.getItem("name");
+        this.getAllArticles()
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        Swal.fire({
+          type: "error",
+          text: `${err.response.data.message}`,
+          showConfirmButton: false,
+          timer: 1500
+        })
+
+        console.log(Object.keys(err), "<= error login");
+        console.log(err.response.data.message, "<= error login");
       })
     },
 
     onSignIn(googleUser) {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+
       let idToken = googleUser.getAuthResponse().id_token;
-      console.log(idToken);
 
       axios.post(`${baseURL}/users/google-sign-in`, {
         idToken
       })
       .then(({ data }) => {
+        this.showSignInForm = false;
         localStorage.setItem("token", data.token)
         localStorage.setItem("id", data.id)
         localStorage.setItem("name", data.name)
@@ -264,6 +300,8 @@ new Vue({
         })
 
         this.token = localStorage.getItem("token");
+        this.name = localStorage.getItem("name");
+        this.getAllArticles()
       })
       .catch(err => {
         console.log(err);
@@ -273,7 +311,7 @@ new Vue({
     signOut() {
       this.clearCredentials()
 
-      if (gapi.auth2) {
+      if (gapi) {
         const auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
           console.log('User signed out.');
@@ -296,6 +334,7 @@ new Vue({
 
     clearCredentials() {
       this.token = null,
+      this.name = null,
       localStorage.clear()
     },
 
@@ -310,6 +349,8 @@ new Vue({
       this.articleContentUpdate = ""
       this.signUpEmailInput = ""
       this.signUpNameInput = ""
+      this.signUpPasswordInput = ""
+      this.signInEmailInput = ""
       this.signUpPasswordInput = ""
     }
   }

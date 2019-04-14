@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="google-signin-client_id" content="611355965363-a29148lhp7ru4e9baphis30c6e43kaqa.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
-    <meta name="google-signin-client_id" content="611355965363-a29148lhp7ru4e9baphis30c6e43kaqa.apps.googleusercontent.com">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/regular.css" integrity="sha384-FKw7x8fCxuvzBwOJmhTJJsKzBl8dnN9e2R4+pXRfYoHivikuHkzWyhKWDSMcGNK8" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
     <link href="./styles/index.css" rel="stylesheet">
     <link href="./styles/vueWysiwyg.css" rel="stylesheet">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <title>Median</title>
   </head>
+
   <body>
     <div id="app">
-      <v-app>
+      <v-app light>
         <v-toolbar app dark color="#404040">
           <v-toolbar-title class="white--text mr-3"><span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span></v-toolbar-title>
           <v-toolbar-items class="hidden-sm-and-down" v-if="token != null">
@@ -27,54 +28,57 @@
           </v-toolbar-items>
           <v-spacer></v-spacer>
 
-            <v-layout >
-              <v-flex lg6 order-lg2>
+          <v-layout >
+            <v-flex lg6 order-lg2>
 
-              </v-flex>
-              <v-flex order-lg2 v-if="token != null">
-                <v-text-field
-                  class="mx-2"
-                  flat
-                  label="Search"
-                  prepend-inner-icon="search"
-                  solo
-                  autofocus
-                  v-model="searchInput"
-                ></v-text-field>
+            </v-flex>
+            <v-flex order-lg2 v-if="token != null">
+              <v-text-field
+                class="mx-2"
+                flat
+                label="Search"
+                prepend-inner-icon="search"
+                solo
+                autofocus
+                v-model="searchInput"
+              ></v-text-field>
 
-              </v-flex>
-            </v-layout>
-            <div v-if="token != null">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn flat icon color="white" v-on="on">
-                      <v-icon @click="createAnArticleModal = true" v-on="on">note_add</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Add an article</span>
-                </v-tooltip>
-<!--               <v-avatar class="mx-4" size="32">
-                <img src="https://avatars1.githubusercontent.com/u/44438299?s=460&v=4" alt="avatar">
-              </v-avatar> -->
+            </v-flex>
+          </v-layout>
+          <div v-if="token != null">
+            <v-toolbar-items>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="white" v-on="on">
+                    <v-icon @click="createAnArticleModal = true" v-on="on">note_add</v-icon>
+                  </v-btn>
+                </template>
+                <span>Add an article</span>
+              </v-tooltip>
               <v-btn flat class="white--text" @click="signOut">SIGN OUT</v-btn>
-            </div>
+            </v-toolbar-items>
+          </div>
         </v-toolbar>
-  <!--
 
-  container
-    row loop
-      row
-        col11 col1
-      row
-        coll2 col10
-  -->
         <div>
           <v-container class="my-5"  id="blog-feed" v-if="token !== null">
-            <v-layout id="post-container" class="my-5" style="background-color: #e6e6e6" align-start justify-center fill-height row wrap v-if="showBlogPostsPage" v-for="(article, index) in searchArticleByTitle" :key="article._id" data-aos="fade-up"/>
+            <v-layout
+              id="post-container"
+              class="my-5"
+              style="background-color: #e6e6e6"
+              align-start
+              justify-center
+              fill-height
+              row
+              wrap
+              v-if="showBlogPostsPage"
+              v-for="(article, index) in searchArticleByTitle" :key="article._id"
+              @click="showDetailedArticleModal = true; articleTitleOnDetailedArticleModal = article.title; articleContentOnDetailedArticleModal = article.content; articleFeaturedImageOnDetailedArticleModal = article.featured_image"
+              data-aos="fade-up"/>
               <template v-if="name == article.UserId.name">
                 <v-flex lg10 md6 class="pt-3 pl-3"> <!-- style="background-color: khaki" -->
                     <h4 class="title">{{ article.title }}</h4>
-                    <p class="subheading">by {{ article.UserId.name }}</p>
+                    <p class="subheading">by you</p>
                 </v-flex>
                 <v-flex lg2>
                   <div class="text-xs-center">
@@ -115,7 +119,7 @@
               </v-flex>
               <v-flex lg10 class="pa-2">
                 <div class="nunito" >
-                  <p v-html="article.content"></p>
+                  <p v-html="article.content.substring(0, 350) + '...'"></p>
                 </div>
               </v-flex>
             </v-layout>
@@ -123,8 +127,8 @@
 
           <!-- LANDING PAGE CONTAINER -->
           <v-container class="my-5" v-if="token == null">
-            <v-layout row wrap align-center justify-center fill-height>
-              <v-flex xs12 class="text-lg-center">
+            <v-layout row wrap align-center justify-center fill-height style="background-color: green">
+              <v-flex xs12 class="text-lg-center" style="background-color: orange">
                 <div>
                   <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
                 </div>
@@ -133,8 +137,8 @@
                 </div>
               </v-flex>
             </v-layout>
-            <v-layout row wrap align-center justify-center class="mt-4">
-              <v-flex xs12 class="text-lg-center">
+            <v-layout row wrap align-center justify-center class="mt-4" style="background-color: lime">
+              <v-flex lg12 class="text-lg-center" style="background-color: blue">
                 <div class="row text-center mx-auto" style="width: 30rem">
                   <div class="col">
                     <v-btn flat large @click="showSignInForm = true">Sign in</v-btn>
@@ -143,21 +147,37 @@
                 </div>
               </v-flex>
 
-              <v-flex xs4>
+              <v-flex lg1 >
+                <a href="#" @click="signOut();">Sign out</a>
               </v-flex>
-              <v-flex xs4 >
-                <div >
-                  <a href="#" @click="signOut();">Sign out</a>
+              <v-flex lg1 >
                   <div id="google-signin-btn"></div>
-                </div>
-              </v-flex>
-              <v-flex xs4>
               </v-flex>
             </v-layout>
           </v-container>
           <!-- #LANDING PAGE CONTAINER -->
 
           <!-- DIALOG -->
+          <!-- ARTICLE DETAILS -->
+          <template>
+            <v-layout row justify-center>
+              <v-dialog v-model="showDetailedArticleModal" width="800px">
+                <v-card class="px-4">
+                  <v-card-title>
+                    <span class="display-1">{{ articleTitleOnDetailedArticleModal }}</span>
+                  </v-card-title>
+                  <v-img :src="articleFeaturedImageOnDetailedArticleModal"></v-img>
+                  <v-card-text class="subheading mt-2" v-html="articleContentOnDetailedArticleModal"></v-card-text>
+                  <v-card-actions class="justify-center">
+                    <v-btn color="green darken-1" flat="flat" @click="showDetailedArticleModal = false">Close</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-layout>
+          </template>
+          <!-- #ARTICLE DETAILS -->
+
+
           <!-- CREATE AN ARTICLE MODAL -->
           <v-dialog v-model="createAnArticleModal">
             <v-card>
@@ -214,52 +234,90 @@
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
-                  <v-layout wrap>
-                    <v-flex lg12>
-                      <v-text-field label="Email*" v-model="signUpEmailInput" required></v-text-field>
-                    </v-flex>
-                    <v-flex lg12>
-                      <v-text-field label="Name*" v-model="signUpNameInput" required></v-text-field>
-                    </v-flex>
-                    <v-flex lg12>
-                      <v-text-field label="Password*" type="password" v-model="signUpPasswordInput" required></v-text-field>
-                    </v-flex>
-                  </v-layout>
+                    <v-form
+                      ref="form"
+                      v-model="validSignUp"
+                      lazy-validation
+                    >
+                      <v-layout wrap>
+                          <v-flex lg12>
+                            <v-text-field
+                              label="Email*"
+                              :rules="emailInputRules"
+                              v-model="signUpEmailInput"
+                              required></v-text-field>
+                          </v-flex>
+                          <v-flex lg12>
+                            <v-text-field
+                              label="Name*"
+                              :rules="nameInputRules"
+                              v-model="signUpNameInput"
+                              required></v-text-field>
+                          </v-flex>
+                          <v-flex lg12>
+                            <v-text-field
+                              label="Password*"
+                              :rules="passwordRules"
+                              type="password"
+                              v-model="signUpPasswordInput"
+                              required></v-text-field>
+                          </v-flex>
+                      </v-layout>
+                    </v-form>
                 </v-container>
                 <small>*indicates required field</small>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" flat @click="showSignUpForm = false">Close</v-btn>
-                <v-btn color="blue darken-1" flat @click="signUp(); showSignUpForm = false;">Register</v-btn>
+                <v-btn
+                  :disabled="!valid"
+                  color="blue darken-1"
+                  flat
+                  @click="validate(); signUp();">Submit</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <!-- #SIGNUP MODAL -->0
+          <!-- #SIGNUP MODAL -->
 
           <!-- #SIGNIN MODAL -->
           <v-dialog v-model="showSignInForm" persistent max-width="600px">
             <v-card>
               <v-card-title class="text-lg-center">
-                <span class="headline ">Sign Up</span>
+                <span class="headline ">Sign In</span>
               </v-card-title>
               <v-card-text>
                 <v-container grid-list-md>
-                  <v-layout wrap>
-                    <v-flex lg12>
-                      <v-text-field label="Email*" v-model="signInEmailInput" required></v-text-field>
-                    </v-flex>
-                    <v-flex lg12>
-                      <v-text-field label="Password*" type="password" v-model="signInPasswordInput" required></v-text-field>
-                    </v-flex>
-                  </v-layout>
+                    <v-form
+                      ref="form"
+                      v-model="validSignIn"
+                      lazy-validation
+                    >
+                      <v-layout wrap>
+                          <v-flex lg12>
+                            <v-text-field
+                              label="Email*"
+                              :rules="emailInputRules"
+                              v-model="signInEmailInput"
+                              required></v-text-field>
+                          </v-flex>
+                          <v-flex lg12>
+                            <v-text-field
+                              label="Password*"
+                              :rules="passwordRules"
+                              type="password"
+                              v-model="signInPasswordInput"
+                              required></v-text-field>
+                          </v-flex>
+                      </v-layout>
+                    </v-form>
                 </v-container>
                 <small>*indicates required field</small>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" flat @click="showSignInForm = false">Close</v-btn>
-                <v-btn color="blue darken-1" flat @click="signIn(); showSignInForm = false;">Register</v-btn>
+                <v-btn color="blue darken-1" flat @click="validate(); signIn();">Submit</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -282,6 +340,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="scripts/components/articleCard.js"></script>
     <script src="./scripts/main.js"></script>
     <script>
       AOS.init();
