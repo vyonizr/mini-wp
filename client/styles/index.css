@@ -55,3 +55,7 @@ html, body {
   transform: scale(1.02);
   cursor: pointer;
 }
+
+.swal2-popup {
+  font-family: "Roboto", sans-serif !important;
+}

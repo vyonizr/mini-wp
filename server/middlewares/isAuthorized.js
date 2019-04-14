@@ -6,7 +6,6 @@ module.exports = function isAuthorized(req, res, next) {
       });
     }
     else {
-      console.log("<= authorized middleware");
       next()
     }
   }

@@ -16,7 +16,9 @@ const getPublicUrl = (filename) => {
 
 const sendUploadToGCS = (req, res, next) => {
   if (!req.file) {
-    return next()
+    res.status(400).json({
+      message: "no image uploaded"
+    })
   }
 
   const gcsname = Date.now() + req.file.originalname

@@ -23,6 +23,22 @@ class ArticleController {
     })
   }
 
+  static getOwnedArticles(req, res) {
+    Article.find({
+      UserId: req.params.userId
+    })
+    .populate({
+      path: "UserId",
+      select: "name"
+    })
+    .then(ownedArticles => {
+      res.status(200).json(ownedArticles)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+  }
+
   static createAnArticle(req, res) {
     Article.create({
       title: req.body.title,

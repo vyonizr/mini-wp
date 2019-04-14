@@ -12,9 +12,7 @@ new Vue({
     articleTitleUpdate: "",
     articleContentUpdate: "",
     articleUserId: "",
-    articleTitleOnDetailedArticleModal: "",
-    articleContentOnDetailedArticleModal: "",
-    articleFeaturedImageOnDetailedArticleModal: "",
+    articleOnDetailedModal: {},
     signUpEmailInput: "",
     signUpNameInput: "",
     signUpPasswordInput: "",
@@ -32,9 +30,11 @@ new Vue({
     ],
     formData: {},
     articles: [],
-    valid: true,
-    createAnArticleModal: false,
+    validSignUp: true,
+    validSignIn: true,
     showBlogPostsPage: true,
+    createAnArticleModal: false,
+    showMyPostsPage: false,
     updateAnArticleModal: false,
     showDetailedArticleModal: false,
     showCreateArticleForm: false,
@@ -66,7 +66,7 @@ new Vue({
       return this.articles.filter(article =>
         article.title.toLowerCase().match(this.searchInput.toLowerCase())
       )
-    },
+    }
   },
 
   methods: {
@@ -78,6 +78,23 @@ new Vue({
 
     getAllArticles() {
       axios.get(`${baseURL}/articles`, {
+        headers: {
+          authentication: this.token
+        }
+      })
+      .then(({ data }) => {
+        data = data.sort(function(a, b) {
+          return new Date(b.created_at) - new Date(a.created_at)
+        })
+        this.articles = data
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
+    getOwnedArticles() {
+      axios.get(`${baseURL}/articles/${localStorage.getItem("id")}`, {
         headers: {
           authentication: this.token
         }
@@ -106,7 +123,8 @@ new Vue({
       .then(({ data }) => {
         this.clearAllForms()
         this.showCreateArticleForm = false
-        this.articles.unshift(data)
+        // this.articles.unshift(data)
+        this.getAllArticles()
       })
       .catch(err => {
         this.clearAllForms()
@@ -127,7 +145,6 @@ new Vue({
         },
         buttonsStyling: false,
       })
-
 
       swalWithVuetifyButtons.fire({
         title: 'Are you sure?',
@@ -153,25 +170,9 @@ new Vue({
             }
           })
         }
-        else {
-          return Swal.fire({
-            text: "Cancelled",
-            type: 'info',
-          })
-        }
       })
       .then(() => {
-        return axios.get(`${baseURL}/articles`, {
-          headers: {
-            authentication: this.token
-          }
-        })
-      })
-      .then(({ data }) => {
-        data = data.sort(function(a, b) {
-          return new Date(b.created_at) - new Date(a.created_at)
-        })
-        this.articles = data
+        this.getAllArticles()
       })
       .catch(err => {
         console.log(err);
@@ -219,7 +220,6 @@ new Vue({
     },
 
     signUp() {
-      console.log("signp");
       axios.post(`${baseURL}/users/register`, {
         email: this.signUpEmailInput,
         name: this.signUpNameInput,
@@ -228,12 +228,14 @@ new Vue({
       .then(({ data }) => {
         Swal.fire({
           type: 'success',
-          title: 'Way to go!',
+          title: 'Way to go',
         })
         this.showSignUpForm = false;
+        this.showSignInForm = true;
         this.clearAllForms()
       })
       .catch(err => {
+        this.clearAllForms()
         console.log(err.response.data, "<= error register");
       })
     },
@@ -310,7 +312,6 @@ new Vue({
 
     signOut() {
       this.clearCredentials()
-
       if (gapi) {
         const auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
@@ -352,6 +353,10 @@ new Vue({
       this.signUpPasswordInput = ""
       this.signInEmailInput = ""
       this.signUpPasswordInput = ""
+    },
+
+    parseDate(date) {
+      return moment(date).calendar();
     }
   }
 })
