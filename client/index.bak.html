@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/regular.css" integrity="sha384-FKw7x8fCxuvzBwOJmhTJJsKzBl8dnN9e2R4+pXRfYoHivikuHkzWyhKWDSMcGNK8" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
-    <link href="./styles/vueWysiwyg.css" rel="stylesheet">
     <link href="./styles/index.css" rel="stylesheet">
+    <link href="./styles/vueWysiwyg.css" rel="stylesheet">
     <title>Median</title>
   </head>
 
@@ -22,8 +22,8 @@
         <v-toolbar app dark color="#404040">
           <v-toolbar-title class="white--text mr-3"><span style="font-family: 'Volkhov', serif; font-size: 2rem">Median</span></v-toolbar-title>
           <v-toolbar-items class="hidden-sm-and-down" v-if="token != null">
-            <v-btn flat class="white--text" @click="getAllArticles()">HOME</v-btn>
-            <v-btn flat class="white--text" @click="getOwnedArticles()">YOUR POSTS</v-btn>
+            <v-btn flat class="white--text" @click="showCreateArticleForm = false; showBlogPostsPage = true;">HOME</v-btn>
+            <v-btn flat class="white--text">YOUR POSTS</v-btn>
           </v-toolbar-items>
           <v-spacer></v-spacer>
 
@@ -74,26 +74,16 @@
               v-for="(article, index) in searchArticleByTitle" :key="article._id"
               data-aos="fade-up"/>
               <template v-if="name == article.UserId.name">
-                <v-flex lg10 md6 class="pt-3 pl-3" @click="showDetailedArticleModal = true;
-                  articleOnDetailedModal = {
-                    title: article.title,
-                    content: article.content,
-                    author: article.UserId.name,
-                    featured_image: article.featured_image,
-                    created_at: article.created_at
-                  }"> <!-- style="background-color: khaki" -->
+                <v-flex lg10 md6 class="pt-3 pl-3" @click="showDetailedArticleModal = true; articleTitleOnDetailedArticleModal = article.title; articleContentOnDetailedArticleModal = article.content; articleFeaturedImageOnDetailedArticleModal = article.featured_image"> <!-- style="background-color: khaki" -->
                     <h4 class="title">{{ article.title }}</h4>
-                    <p class="subheading">You | {{ parseDate(article.created_at) }}</p>
+                    <p class="subheading">by you</p>
                 </v-flex>
                 <v-flex lg2>
                   <div class="text-xs-center">
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
-                        <v-btn flat icon color="red" v-on="on" @click="deleteAnArticle(article._id, article.UserId._id)">
-                          <v-icon 
-                            >
-                            delete
-                          </v-icon>
+                        <v-btn flat icon color="red" v-on="on">
+                          <v-icon @click="deleteAnArticle(article._id, article.UserId._id)">delete</v-icon>
                         </v-btn>
                       </template>
                       <span>Delete</span>
@@ -102,8 +92,8 @@
                       <template v-slot:activator="{ on }">
                         <v-btn flat icon color="blue" v-on="on">
                           <v-icon
-                            @click="updateAnArticleModal = true; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id; articleUserId = article.UserId._id">
-                            edit
+                          @click="updateAnArticleModal = true; articleTitleUpdate = article.title; articleContentUpdate = article.content; articleIdUpdate = article._id; articleUserId = article.UserId">
+                          edit
                           </v-icon>
                         </v-btn>
                       </template>
@@ -113,28 +103,14 @@
                 </v-flex>
               </template>
               <template v-else>
-                <v-flex lg12 md6 class="pt-3 pl-3"
-                  @click="showDetailedArticleModal = true;
-                  articleOnDetailedModal = {
-                    title: article.title,
-                    content: article.content,
-                    created_at: parseDate(article.created_at),
-                    author: article.UserId.name,
-                    featured_image: article.featured_image
-                  }"> <!-- style="background-color: khaki" -->
+                <v-flex lg12 md6 class="pt-3 pl-3" 
+                  @click="showDetailedArticleModal = true; articleTitleOnDetailedArticleModal = article.title; articleContentOnDetailedArticleModal = article.content; articleFeaturedImageOnDetailedArticleModal = article.featured_image"> <!-- style="background-color: khaki" -->
                   <h4 class="title">{{ article.title }}</h4>
-                  <p class="subheading">{{ article.UserId.name }} | {{ parseDate(article.created_at) }}</p>
+                  <p class="subheading">by {{ article.UserId.name }}</p>
                 </v-flex>
               </template>
               <v-flex lg2 class="pl-3 pb-3 pr-3"
-                @click="showDetailedArticleModal = true;
-                  articleOnDetailedModal = {
-                    title: article.title,
-                    content: article.content,
-                    created_at: parseDate(article.created_at),
-                    author: article.UserId.name,
-                    featured_image: article.featured_image
-                  }">
+                @click="showDetailedArticleModal = true; articleTitleOnDetailedArticleModal = article.title; articleContentOnDetailedArticleModal = article.content; articleFeaturedImageOnDetailedArticleModal = article.featured_image">
                 <v-img
                   :src="article.featured_image"
                   max-height="100"
@@ -142,14 +118,7 @@
                 ></v-img>
               </v-flex>
               <v-flex lg10 class="pa-2"
-              @click="showDetailedArticleModal = true;
-                  articleOnDetailedModal = {
-                    title: article.title,
-                    content: article.content,
-                    created_at: parseDate(article.created_at),
-                    author: article.UserId.name,
-                    featured_image: article.featured_image
-                  }">
+              @click="showDetailedArticleModal = true; articleTitleOnDetailedArticleModal = article.title; articleContentOnDetailedArticleModal = article.content; articleFeaturedImageOnDetailedArticleModal = article.featured_image">
                 <div class="nunito" >
                   <p v-html="article.content.substring(0, 350) + '...'"></p>
                 </div>
@@ -159,8 +128,8 @@
 
           <!-- LANDING PAGE CONTAINER -->
           <v-container class="my-5" v-if="token == null">
-            <v-layout row wrap align-center justify-center fill-height>
-              <v-flex xs12 class="text-lg-center">
+            <v-layout row wrap align-center justify-center fill-height style="background-color: green">
+              <v-flex xs12 class="text-lg-center" style="background-color: orange">
                 <div>
                   <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
                 </div>
@@ -169,8 +138,8 @@
                 </div>
               </v-flex>
             </v-layout>
-            <v-layout row wrap align-center justify-center class="mt-4">
-              <v-flex lg12 class="text-lg-center">
+            <v-layout row wrap align-center justify-center class="mt-4" style="background-color: lime">
+              <v-flex lg12 class="text-lg-center" style="background-color: blue">
                 <div class="row text-center mx-auto" style="width: 30rem">
                   <div class="col">
                     <v-btn flat large @click="showSignInForm = true">Sign in</v-btn>
@@ -179,7 +148,10 @@
                 </div>
               </v-flex>
 
-              <v-flex lg1 py-4>
+              <v-flex lg1 >
+                <a href="#" @click="signOut();">Sign out</a>
+              </v-flex>
+              <v-flex lg1 >
                   <div id="google-signin-btn"></div>
               </v-flex>
             </v-layout>
@@ -193,12 +165,10 @@
               <v-dialog v-model="showDetailedArticleModal" width="800px">
                 <v-card class="px-4">
                   <v-card-title>
-                    <p><span class="display-1">{{ articleOnDetailedModal.title }}</span> <br>
-                    <span class="subheading">{{ articleOnDetailedModal.author }} | {{ articleOnDetailedModal.created_at }}</span></p>
-<!--                     <span class="display-1">{{ articleOnDetailedModal.title }}</span><br> -->
+                    <span class="display-1">{{ articleTitleOnDetailedArticleModal }}</span>
                   </v-card-title>
-                  <v-img :src="articleOnDetailedModal.featured_image"></v-img>
-                  <v-card-text class="subheading mt-2" v-html="articleOnDetailedModal.content"></v-card-text>
+                  <v-img :src="articleFeaturedImageOnDetailedArticleModal"></v-img>
+                  <v-card-text class="subheading mt-2" v-html="articleContentOnDetailedArticleModal"></v-card-text>
                   <v-card-actions class="justify-center">
                     <v-btn color="green darken-1" flat="flat" @click="showDetailedArticleModal = false">Close</v-btn>
                   </v-card-actions>
@@ -302,7 +272,7 @@
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" flat @click="showSignUpForm = false">Close</v-btn>
                 <v-btn
-                  :disabled="!validSignUp"
+                  :disabled="!valid"
                   color="blue darken-1"
                   flat
                   @click="validate(); signUp();">Submit</v-btn>
@@ -348,9 +318,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" flat @click="showSignInForm = false">Close</v-btn>
-                <v-btn color="blue darken-1" flat
-                  :disabled="!validSignIn"
-                  @click="validate(); signIn();">Submit</v-btn>
+                <v-btn color="blue darken-1" flat @click="validate(); signIn();">Submit</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -361,19 +329,20 @@
     </div>
     <!-- #APP -->
 
-    <!-- SCRIPTS -->
+<!-- SCRIPTS -->
+
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="./scripts/vueWysiwyg.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
-    <script src="./scripts/components/articleCard.js"></script>
-    <script src="./scripts/vueWysiwyg.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="scripts/components/articleCard.js"></script>
     <script src="./scripts/main.js"></script>
     <script>
       AOS.init();
