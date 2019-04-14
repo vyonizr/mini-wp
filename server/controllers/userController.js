@@ -55,7 +55,6 @@ class UserController {
   }
 
   static userRegister(req, res) {
-    console.log(req.body, "<= req.body");
     User.create({
       email: req.body.email,
       name: req.body.name,
@@ -67,8 +66,6 @@ class UserController {
         email: createdUser.email,
         name: createdUser.name
       })
-
-      console.log(token);
 
       res.status(200).json({ token })
     })
