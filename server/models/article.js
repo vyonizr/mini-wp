@@ -13,7 +13,7 @@ const articleSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  UserId: {
+  author: {
     type: Schema.Types.ObjectId,
     ref: "User"
   }

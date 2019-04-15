@@ -11,7 +11,7 @@ new Vue({
     articleIdUpdate: "",
     articleTitleUpdate: "",
     articleContentUpdate: "",
-    articleUserId: "",
+    articleAuthorId: "",
     articleOnDetailedModal: {},
     signUpEmailInput: "",
     signUpNameInput: "",
@@ -52,6 +52,12 @@ new Vue({
   created() {
     if(localStorage.getItem("token") !== null) {
       this.getAllArticles()
+    }
+
+    if(gapi.auth2) {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
     }
   },
 
@@ -121,6 +127,13 @@ new Vue({
         }
       })
       .then(({ data }) => {
+        Swal.fire({
+          position: 'top-end',
+          type: 'success',
+          title: 'Article published',
+          showConfirmButton: false,
+          timer: 1200
+        })
         this.clearAllForms()
         this.showCreateArticleForm = false
         // this.articles.unshift(data)
@@ -160,7 +173,7 @@ new Vue({
         if (result.value) {
           Swal.fire(
           'Deleted!',
-          'Your file has been deleted.',
+          'Article has been deleted',
           'success'
           )
           return axios.delete(`${baseURL}/articles/${articleId}`, {
@@ -186,7 +199,7 @@ new Vue({
       axios.patch(`${baseURL}/articles/${this.articleIdUpdate}`, this.formData, {
         headers: {
           authentication: this.token,
-          authorization: this.articleUserId,
+          authorization: this.articleAuthorId,
           "Content-Type": "multipart/form-data"
         }
       })
@@ -236,6 +249,12 @@ new Vue({
       })
       .catch(err => {
         this.clearAllForms()
+        if (err.response.data) {
+          Swal.fire({
+            type: "error",
+            text: "Please fill in all fields"
+          })
+        }
         console.log(err.response.data, "<= error register");
       })
     },
@@ -353,6 +372,7 @@ new Vue({
       this.signUpPasswordInput = ""
       this.signInEmailInput = ""
       this.signUpPasswordInput = ""
+      this.formData = {}
     },
 
     parseDate(date) {

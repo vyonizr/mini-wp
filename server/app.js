@@ -8,7 +8,6 @@ const port = process.env.PORT || 80
 const routes = require("./routes")
 
 mongoose.connect("mongodb://localhost:27017/miniwp", { useNewUrlParser: true })
-// mongodb+srv://admin:<password>@median-yqers.gcp.mongodb.net/test?retryWrites=true
 // mongoose.connect(`mongodb+srv://${process.env.ATLAS_USERID}:${process.env.ATLAS_PASSWORD}@median-yqers.gcp.mongodb.net/miniwp`, { useNewUrlParser: true })
 
 app.use(cors())

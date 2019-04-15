@@ -1,18 +1,11 @@
 const { Article, } = require("../models")
 const ObjectId = require('mongodb').ObjectID
 
-/*
-    .populate({
-      path: "UserId",
-      select: "name"
-    })
- */
-
 class ArticleController {
   static getAllArticles(req, res) {
     Article.find({})
     .populate({
-      path: "UserId",
+      path: "author",
       select: "name"
     })
     .then(articles => {
@@ -25,10 +18,10 @@ class ArticleController {
 
   static getOwnedArticles(req, res) {
     Article.find({
-      UserId: req.params.userId
+      author: req.params.userId
     })
     .populate({
-      path: "UserId",
+      path: "author",
       select: "name"
     })
     .then(ownedArticles => {
@@ -44,7 +37,7 @@ class ArticleController {
       title: req.body.title,
       content: req.body.content,
       featured_image: req.file.cloudStoragePublicUrl,
-      UserId: ObjectId(req.authenticatedUser.id)
+      author: ObjectId(req.authenticatedUser.id)
     })
     .then(createdArticle => {
       res.status(201).json(createdArticle)
@@ -56,7 +49,6 @@ class ArticleController {
         })
       }
       else {
-        console.log(err);
         res.status(500).json(err)
       }
     })
@@ -84,7 +76,6 @@ class ArticleController {
       updatedAt: new Date()
     }, { new: true })
     .then(updatedArticle => {
-      console.log(updatedArticle);
       res.status(200).json(updatedArticle)
     })
     .catch(err => {
