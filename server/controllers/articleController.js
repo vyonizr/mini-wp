@@ -49,7 +49,6 @@ class ArticleController {
         })
       }
       else {
-        console.log(err);
         res.status(500).json(err)
       }
     })
@@ -77,7 +76,6 @@ class ArticleController {
       updatedAt: new Date()
     }, { new: true })
     .then(updatedArticle => {
-      console.log(updatedArticle);
       res.status(200).json(updatedArticle)
     })
     .catch(err => {

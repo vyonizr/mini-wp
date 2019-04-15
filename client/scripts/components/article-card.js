@@ -2,7 +2,7 @@ Vue.component('article-card', {
     props: {
       name: String,
       articles: Array,
-      searchArticleByTitle: Array,
+      "search-article-by-title": Array,
       showBlogPostsPage: Boolean,
       showDetailedArticleModal: Boolean
     },

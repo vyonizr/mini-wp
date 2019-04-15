@@ -27,36 +27,27 @@
           </v-toolbar-items>
           <v-spacer></v-spacer>
 
-          <v-layout >
-            <v-flex lg6 order-lg2>
+            <v-text-field
+              class="mx-2"
+              flat
+              label="Search"
+              prepend-inner-icon="search"
+              solo-inverted
+              v-model="searchInput"
+              v-show="token != null"
+            ></v-text-field>
 
-            </v-flex>
-            <v-flex order-lg2 v-if="token != null">
-              <v-text-field
-                class="mx-2"
-                flat
-                label="Search"
-                prepend-inner-icon="search"
-                solo
-                autofocus
-                v-model="searchInput"
-              ></v-text-field>
-
-            </v-flex>
-          </v-layout>
-          <div v-if="token != null">
-            <v-toolbar-items>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="white" v-on="on">
-                    <v-icon @click="createAnArticleModal = true" v-on="on">note_add</v-icon>
-                  </v-btn>
-                </template>
-                <span>Add an article</span>
-              </v-tooltip>
-              <v-btn flat class="white--text" @click="signOut">SIGN OUT</v-btn>
-            </v-toolbar-items>
-          </div>
+          <v-toolbar-items v-show="token != null">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon color="white" v-on="on">
+                  <v-icon @click="createAnArticleModal = true" v-on="on">note_add</v-icon>
+                </v-btn>
+              </template>
+              <span>Add an article</span>
+            </v-tooltip>
+            <v-btn :ripple="false" flat class="white--text" @click="signOut">SIGN OUT</v-btn>
+          </v-toolbar-items>
         </v-toolbar>
 
         <div>
@@ -83,7 +74,7 @@
                     created_at: article.created_at
                   }">
                     <h4 class="title">{{ article.title }}</h4>
-                    <p class="subheading">You | {{ parseDate(article.created_at) }}</p>
+                    <p class="body-1">You | {{ parseDate(article.created_at) }}</p>
                 </v-flex>
                 <v-flex lg2>
                   <div class="text-xs-center">
@@ -121,9 +112,9 @@
                     created_at: parseDate(article.created_at),
                     author: article.author.name,
                     featured_image: article.featured_image
-                  }"> <!-- style="background-color: khaki" -->
+                  }">
                   <h4 class="title">{{ article.title }}</h4>
-                  <p class="subheading">{{ article.author.name }} | {{ parseDate(article.created_at) }}</p>
+                  <p class="body-1">{{ article.author.name }} | {{ parseDate(article.created_at) }}</p>
                 </v-flex>
               </template>
               <v-flex lg2 class="pl-3 pb-3 pr-3"
@@ -166,7 +157,7 @@
                   <span style="font-family: 'Volkhov', serif; font-size: 5rem">Median</span>
                 </div>
                 <div>
-                  <span style="font-family: 'nunito', serif; font-size: 2rem">a place to read and write big ideas and important stories</span>
+                  <span style="font-family: 'nunito', serif; font-size: 2rem">a vessel of knowledge and big stories</span>
                 </div>
               </v-flex>
             </v-layout>
@@ -373,7 +364,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
-    <script src="./scripts/components/articleCard.js"></script>
+    <script src="./scripts/components/article-card.js"></script>
     <script src="./scripts/vueWysiwyg.js"></script>
     <script src="./scripts/main.js"></script>
     <script>
