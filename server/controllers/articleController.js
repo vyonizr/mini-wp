@@ -3,7 +3,11 @@ const ObjectId = require('mongodb').ObjectID
 
 class ArticleController {
   static getAllArticles(req, res) {
-    Article.find({})
+    Article.find({}, {}, {
+      sort: {
+        created_at: -1
+      }
+    })
     .populate({
       path: "author",
       select: "name"
@@ -12,6 +16,7 @@ class ArticleController {
       res.status(200).json(articles)
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json(err)
     })
   }
@@ -19,6 +24,10 @@ class ArticleController {
   static getOwnedArticles(req, res) {
     Article.find({
       author: req.params.userId
+    }, {}, {
+      sort: {
+        created_at: 1
+      }
     })
     .populate({
       path: "author",

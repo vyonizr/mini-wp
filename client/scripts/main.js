@@ -28,7 +28,7 @@ new Vue({
     passwordRules: [
       v => !!v || 'Password is required',
     ],
-    formData: {},
+    formData: new FormData(),
     articles: [],
     validSignUp: true,
     validSignIn: true,
@@ -89,9 +89,6 @@ new Vue({
         }
       })
       .then(({ data }) => {
-        data = data.sort(function(a, b) {
-          return new Date(b.created_at) - new Date(a.created_at)
-        })
         this.articles = data
       })
       .catch(err => {
@@ -106,9 +103,6 @@ new Vue({
         }
       })
       .then(({ data }) => {
-        data = data.sort(function(a, b) {
-          return new Date(b.created_at) - new Date(a.created_at)
-        })
         this.articles = data
       })
       .catch(err => {
@@ -150,7 +144,7 @@ new Vue({
       this.articleContent = ''
     },
 
-    deleteAnArticle(articleId, userId) {
+    deleteAnArticle(objArticle) {
       const swalWithVuetifyButtons = Swal.mixin({
         customClass: {
           confirmButton: 'v-btn theme--light error',
@@ -158,7 +152,7 @@ new Vue({
         },
         buttonsStyling: false,
       })
-
+// objArticle
       swalWithVuetifyButtons.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -176,10 +170,10 @@ new Vue({
           'Article has been deleted',
           'success'
           )
-          return axios.delete(`${baseURL}/articles/${articleId}`, {
+          return axios.delete(`${baseURL}/articles/${objArticle.articleId}`, {
             headers: {
               authentication: this.token,
-              authorization: userId
+              authorization: objArticle.userId
             }
           })
         }
@@ -222,9 +216,6 @@ new Vue({
         })
       })
       .then(({ data }) => {
-        data = data.sort(function(a, b) {
-          return new Date(b.created_at) - new Date(a.created_at)
-        })
         this.articles = data
       })
       .catch(err => {
@@ -284,6 +275,7 @@ new Vue({
         this.getAllArticles()
       })
       .catch((err) => {
+        this.clearAllForms()
         Swal.fire({
           type: "error",
           text: `${err.response.data.message}`,
@@ -372,9 +364,21 @@ new Vue({
       this.signUpPasswordInput = ""
       this.signInEmailInput = ""
       this.signUpPasswordInput = ""
-      this.formData = {}
+      this.formData = new FormData()
     },
 
+    toggleDetailedArticleModal(articleOnDetailedModal) {
+      console.log("listened");
+      this.showDetailedArticleModal = !this.showDetailedArticleModal
+      this.articleOnDetailedModal = articleOnDetailedModal
+    },
+    toggleUpdateArticleModal (article) {
+      this.updateAnArticleModal = !this.updateAnArticleModal
+      this.articleTitleUpdate = article.title;
+      this.articleContentUpdate = article.content;
+      this.articleIdUpdate = article._id;
+      this.articleAuthorId = article.author._id
+    },
     parseDate(date) {
       return moment(date).calendar();
     }
